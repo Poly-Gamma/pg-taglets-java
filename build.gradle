@@ -1,0 +1,144 @@
+// SPDX-License-Identifier: Apache-2.0
+
+plugins {
+	id('java-library')
+	id('maven-publish')
+	id('signing')
+	alias(libs.plugins.checker)
+	alias(libs.plugins.nexus.publish)
+}
+
+group = 'org.poly-gamma'
+version = '1.0.0-SNAPSHOT'
+ext.release = version.endsWith('SNAPSHOT')
+
+repositories {
+	mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+	compileOnly(libs.checker.qual)
+	checkerFramework(libs.checker)
+}
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
+}
+
+compileJava {
+	options.javaModuleVersion = project.version
+}
+
+compileJava {
+	options.encoding = 'utf-8'
+	options.warnings = true
+	options.release = 17
+	options.compilerArgs += [
+		/*
+		 * Enable all warnings and treat warnings as errors.
+		 */
+		'-Xlint:all', '-Werror', '-Xmaxerrs', '1',
+		/*
+		 * Implicitly generate classes to avoid implicit warnings.
+		 */
+		'-implicit:class',
+		/*
+		 * Disable warnings for using automatic modules with static/transitive qualifiers.
+		 */
+		'-Xlint:-requires-automatic', '-Xlint:-exports'
+	]
+}
+
+javadoc {
+	title = "Poly-Gamma - ${project.name} - ${project.version}"
+	options.encoding = 'utf-8'
+	options.memberLevel = JavadocMemberLevel.PROTECTED
+	options.addBooleanOption('Xdoclint:all', true)
+	options.addBooleanOption('Werror', true)
+	options.addBooleanOption('html5', true)
+	options.links('https://docs.oracle.com/en/java/javase/17/docs/api')
+	options.linksOffline(
+		'https://checkerframework.org/api/',
+		projectDir.toPath().resolve('javadoc-links').resolve('org.checkerframework').toString())
+}
+
+jar {
+	manifest.attributes('Sealed': 'true')
+}
+
+checkerFramework {
+	checkers = [
+	    'org.checkerframework.checker.nullness.NullnessChecker'
+	]
+	extraJavacArgs = [
+		/*
+		 * Some checker annotations go unclaimed, avoid warning on those.
+		 */
+		'-Xlint:-processing',
+	]
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+
+			versionMapping {
+				usage('java-api') {
+					fromResolutionOf('runtimeClasspath')
+				}
+				usage('java-runtime') {
+					fromResolutionResult()
+				}
+			}
+
+			pom {
+				name = 'Poly-Gamma Javadoc Taglets'
+				description = 'Common Javadoc taglets for tags such as @apiNote.'
+				url = "https://poly-gamma.org/java/${project.name}"
+
+				licenses {
+					license {
+						name = 'Apache-2.0'
+						url = 'https://apache.org/licenses/LICENSE-2.0.txt'
+					}
+				}
+
+				developers {
+					developer {
+						id = 'amiftah'
+						name = 'Aaloan Miftah'
+						email = 'al@poly-gamma.org'
+					}
+				}
+
+				scm {
+					connection = "scm:git:git:git@github.com:Poly-Gamma/${project.name}-java"
+					url = "https://poly-gamma.org/java/${project.name}"
+				}
+			}
+		}
+	}
+}
+
+nexusPublishing {
+	repositories {
+		sonatype {
+			nexusUrl = uri('https://s01.oss.sonatype.org/service/local/')
+			snapshotRepositoryUrl = uri('https://s01.oss.sonatype.org/content/repositories/snapshots/')
+			username = project.property('ossrhUsername')
+			password = project.property('ossrhPassword')
+		}
+	}
+}
+
+signing {
+	required { release }
+	sign(publishing.publications.mavenJava)
+}

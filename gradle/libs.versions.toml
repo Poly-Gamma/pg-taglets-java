@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: Apache-2.0
+
+[versions]
+checker = { require = '[3.26.0, 3.34.0[', prefer = '3.32.0' }
+checker-plugin = { require = '[0.6.20, 0.6.30[', prefer = '0.6.25' }
+nexus-publish-plugin = '1.3.0'
+
+[libraries]
+checker-qual = { module = 'org.checkerframework:checker-qual', version.ref = 'checker' }
+checker = { module = 'org.checkerframework:checker', version.ref = 'checker' }
+
+[plugins]
+checker = { id = 'org.checkerframework', version.ref = 'checker-plugin' }
+nexus-publish = { id = 'io.github.gradle-nexus.publish-plugin', version.ref = 'nexus-publish-plugin' }
