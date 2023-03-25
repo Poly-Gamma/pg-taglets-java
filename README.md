@@ -49,36 +49,36 @@ inside its own element `li`.
 ```java
 public interface Foo {
 
-	/**
-	 * Test whether this has a valid state.
-	 *
-	 * @return {@code true} <i>if and only if</i> state is valid.
-	 * @since 1.0
-	 */
-	boolean isValid();
+    /**
+     * Test whether this has a valid state.
+     *
+     * @return {@code true} <i>if and only if</i> state is valid.
+     * @since 1.0
+     */
+    boolean isValid();
 
-	/**
-	 * Do bar for foo (unsafe).
-	 *
-	 * @assert {@code this} must have a {@linkplain #isValid() valid state}.
-	 * @assert {@code 0 <= baz <= 30}
-	 * @param baz Baz to bar with.
-	 * @since 1.0
-	 * @see #bar(int)
-	 */
-	void unsafeBar(int baz);
+    /**
+     * Do bar for foo (unsafe).
+     *
+     * @assert {@code this} must have a {@linkplain #isValid() valid state}.
+     * @assert {@code 0 <= baz <= 30}
+     * @param baz Baz to bar with.
+     * @since 1.0
+     * @see #bar(int)
+     */
+    void unsafeBar(int baz);
 
-	/**
-	 * Do bar for foo.
-	 *
-	 * @apiNote Some note about this API.
-	 * @implSpec Base implementation requirements.
-	 * @param baz Baz to bar with.
-	 * @throws IllegalStateException {@code this} does not have a {@linkplain #isValid() valid state}.
-	 * @throws IllegalArgumentException {@code baz} is negative or greater than {@code 30}.
-	 * @since 1.0
-	 */
-	void bar(int baz);
+    /**
+     * Do bar for foo.
+     *
+     * @apiNote Some note about this API.
+     * @implSpec Base implementation requirements.
+     * @param baz Baz to bar with.
+     * @throws IllegalStateException {@code this} does not have a {@linkplain #isValid() valid state}.
+     * @throws IllegalArgumentException {@code baz} is negative or greater than {@code 30}.
+     * @since 1.0
+     */
+    void bar(int baz);
 }
 ```
 
@@ -86,31 +86,31 @@ public interface Foo {
 
 ```xml
 <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-javadoc-plugin</artifactId>
-	<version>3.5.0</version>
-	<configuration>
-		...
-		<taglets>
-			<taglet>
-				<tagletClass>org.polygamma.taglets.ApiNoteTaglet</tagletClass>
-			</taglet>
-			<taglet>
-				<tagletClass>org.polygamma.taglets.AssertTaglet</tagletClass>
-			</taglet>
-			<taglet>
-				<tagletClass>org.polygamma.taglets.ImplNoteTaglet</tagletClass>
-			</taglet>
-			<taglet>
-				<tagletClass>org.polygamma.taglets.ImplSpecTaglet</tagletClass>
-			</taglet>
-		</taglets>
-		<tagletArtifact>
-			<groupId>org.poly-gamma</groupId>
-			<artifactId>pg-taglets</groupId>
-			<version>1.0.0</version>
-		</tagletArtifact>
-	</configuration>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-javadoc-plugin</artifactId>
+    <version>3.5.0</version>
+    <configuration>
+        ...
+        <taglets>
+            <taglet>
+                <tagletClass>org.polygamma.taglets.ApiNoteTaglet</tagletClass>
+            </taglet>
+            <taglet>
+                <tagletClass>org.polygamma.taglets.AssertTaglet</tagletClass>
+            </taglet>
+            <taglet>
+                <tagletClass>org.polygamma.taglets.ImplNoteTaglet</tagletClass>
+            </taglet>
+            <taglet>
+                <tagletClass>org.polygamma.taglets.ImplSpecTaglet</tagletClass>
+            </taglet>
+        </taglets>
+        <tagletArtifact>
+            <groupId>org.poly-gamma</groupId>
+            <artifactId>pg-taglets</groupId>
+            <version>1.0.0</version>
+        </tagletArtifact>
+    </configuration>
 </plugin>
 ```
 
@@ -118,24 +118,24 @@ public interface Foo {
 
 ```groovy
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 configurations {
-	javadocTaglets
+    javadocTaglets
 }
 
 dependencies {
-	javadocTaglets('org.poly-gamma:pg-taglets:1.0.0')
+    javadocTaglets('org.poly-gamma:pg-taglets:1.0.0')
 }
 
 tasks.withType(Javadoc).configureEach {
-	options.tagletPath = configurations.javadocTaglets.files.asType(List)
-	options.taglets = [
-		'org.polygamma.taglets.ApiNoteTaglet',
-		'org.polygamma.taglets.AssertTaglet',
-		'org.polygamma.taglets.ImplNoteTaglet',
-		'org.polygamma.taglets.ImplSpecTaglet'
-	]
+    options.tagletPath = configurations.javadocTaglets.files.asType(List)
+    options.taglets = [
+        'org.polygamma.taglets.ApiNoteTaglet',
+        'org.polygamma.taglets.AssertTaglet',
+        'org.polygamma.taglets.ImplNoteTaglet',
+        'org.polygamma.taglets.ImplSpecTaglet'
+    ]
 }
 ```
