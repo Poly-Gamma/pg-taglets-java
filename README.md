@@ -36,7 +36,7 @@ To publish to local maven repository, invoke the `publishToMavenLocal` task:
 
 This module introduces 4 new block tags:
 
-1. `@assert <note>` - Precondition required to hold true apriori method call, or for an instance.
+1. `@assert <note>` - Precondition required to hold true apriori method call, or for using an instance.
 2. `@apiNote <note>` - Describes additional API details to end-user.
 3. `@implNote <note>` - Describes implementation specific details to end-user.
 4. `@implSpec <note>` - Describes bare-minimum implementation requirements to end-user.
